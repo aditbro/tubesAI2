@@ -34,7 +34,7 @@ class InputDataInterpreter():
 	def makeDatasetList(self, input_data):
 		for row in input_data:
 			self.target.append(row[0].split(',')[-1])
-			self.data.append(row[0].split(',')[0:-1])
+			self.data.append(row[0].split(',')[0:13])
 		
 		# there's an empty data
 		self.data[548][6] = '?'
@@ -45,7 +45,7 @@ class InputDataInterpreter():
 		column_patch_method = ["median", "modus", "modus", "mean", \
 		"mean", "modus", "modus", "mean", \
 		"modus", "mean", "modus", "modus", "modus"]
-
+		
 		column_patch_values = self.getColumnPatchVal(column_patch_method)
 
 		for i in range(len(self.data)):
