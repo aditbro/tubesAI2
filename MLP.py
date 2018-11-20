@@ -15,25 +15,14 @@ model_dir = 'models/'
 inp = IO.InputDataInterpreter(filename="data/tubes2_HeartDisease_train.csv")
 test_data = IO.TestDataInterpreter(filename="data/tubes2_HeartDisease_test.csv")
 
-kf = KFold(n_splits=5, shuffle=True)
-kf.get_n_splits(inp.data)
+train_data = inp.data[0:650]
+train_target = inp.target[0:650]
 
-train_data = []
-train_target = []
-
-test_data = []
-test_target = []
-for train_index, test_index in kf.split(inp.data):
-	for idx in train_index:
-		train_data.append(inp.data[idx])
-		train_target.append(inp.target[idx])
-
-	for idx in test_index: 
-		test_data.append(inp.data[idx])
-		test_target.append(inp.target[idx])
+test_data = inp.data[650:]
+test_target = inp.target[650:]
 
 print("Training data...")
-clf = MLPClassifier(max_iter=9000, solver='lbfgs', alpha=1e-5 ,hidden_layer_sizes=(13,13,13,13,13,13,13,13,13,13), random_state=0, shuffle=True)
+clf = MLPClassifier(max_iter=9000, solver='sgd', alpha=1e-5 ,hidden_layer_sizes=(13,10,8,6), random_state=1, shuffle=True)
 clf_model = clf.fit(train_data, train_target)
 
 print("predicting data...")
