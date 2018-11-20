@@ -8,8 +8,22 @@ class InputDataInterpreter():
 		self.target = []
 		self.processInputFile()
 
+	def reduceUnknownData(self):
+		for row in self.data:
+			if(self.countUnknownAttr(row) > 13):
+				self.data.remove(row)
+
+	def countUnknownAttr(self, row):
+		count_unknown = 0
+		for data in row:
+			if data == '?':
+				count_unknown += 1
+		
+		return count_unknown
+
 	def processInputFile(self):
 		input_data = self.getInputFileContent()
+
 		self.makeDatasetList(input_data)
 		
 		for i in range(len(self.data)):
@@ -36,9 +50,8 @@ class InputDataInterpreter():
 			self.target.append(row[0].split(',')[-1])
 			self.data.append(row[0].split(',')[0:13])
 		
-		# there's an empty data
-		self.data[548][6] = '?'
-
+		self.reduceUnknownData()
+		
 		self.patchUnknownData()
 
 	def patchUnknownData(self):
@@ -50,7 +63,7 @@ class InputDataInterpreter():
 
 		for i in range(len(self.data)):
 			for j in range(len(self.data[0])):
-				if self.data[i][j] == '?':
+				if self.data[i][j] == '?' or self.data[i][j] == '':
 					self.data[i][j] = column_patch_values[j]
 
 
