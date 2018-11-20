@@ -22,7 +22,7 @@ test_data = inp.data[650:]
 test_target = inp.target[650:]
 
 print("Training data...")
-clf = MLPClassifier(max_iter=9000, solver='sgd', alpha=1e-5 ,hidden_layer_sizes=(13,10,8,6), random_state=1, shuffle=True)
+clf = MLPClassifier(max_iter=9000, solver='lbfgs', alpha=1e-5 ,hidden_layer_sizes=(13,14,16,14,13), random_state=1, shuffle=True)
 clf_model = clf.fit(train_data, train_target)
 
 print("predicting data...")
@@ -30,8 +30,9 @@ result = clf_model.predict(test_data)
 
 fit = 0
 for i in range(len(result)):
-    if result[i] == test_target[i]:
-        fit += 1
+	print(result[i], test_target[i])
+	if result[i] == test_target[i]:
+	    fit += 1
 
 print('MLP fit {}%'.format(fit/len(result) * 100))
 

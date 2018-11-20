@@ -9,9 +9,7 @@ class InputDataInterpreter():
 		self.processInputFile()
 
 	def reduceUnknownData(self):
-		for row in self.data:
-			if(self.countUnknownAttr(row) > 13):
-				self.data.remove(row)
+		pass
 
 	def countUnknownAttr(self, row):
 		count_unknown = 0
@@ -48,7 +46,7 @@ class InputDataInterpreter():
 	def makeDatasetList(self, input_data):
 		for row in input_data:
 			self.target.append(row[0].split(',')[-1])
-			self.data.append(row[0].split(',')[0:11])
+			self.data.append(row[0].split(',')[0:13])
 		
 		self.reduceUnknownData()
 		
@@ -57,8 +55,8 @@ class InputDataInterpreter():
 	def patchUnknownData(self):
 		column_patch_method = ["median", "modus", "modus", "mean", \
 		"mean", "modus", "modus", "mean", \
-		"modus", "mean", "modus"]
-		# , "modus", "modus"
+		"modus", "mean", "modus", "modus", "modus"]
+		
 		column_patch_values = self.getColumnPatchVal(column_patch_method)
 
 		for i in range(len(self.data)):
