@@ -6,8 +6,21 @@ class InputDataInterpreter():
 		self.filename = filename
 		self.data = []
 		self.target = []
+		self.data_stat = []
 		self.processInputFile()
+		self.initDataStatistic()
 
+	def initDataStatistic(self):
+		for j in range(len(self.data[0])):
+			stat = {}
+			
+			for i in range(len(self.data)):
+				stat['modus'] = self.getDataModus(j)
+				stat['mean'] = self.getDataMean(j)
+				stat['median'] = self.getDataMedian(j)
+			
+			self.data_stat.append(stat)
+	
 	def reduceUnknownData(self):
 		pass
 
@@ -120,20 +133,23 @@ class InputDataInterpreter():
 
 	def getDataMean(self, j):
 		column_sum = 0
+		data_num = 0
 
 		for i in range(len(self.data)):
 			if self.__is_int__(self.data[i][j]):
 				column_sum += int(self.data[i][j])
+				data_num += 1
 
-		return str(column_sum / len(self.data))
+		return str(column_sum / data_num)
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 
 class TestDataInterpreter():
-	def __init__(self, filename = ""):
+	def __init__(self, filename = "", data_stat = []):
 		self.filename = filename
 		self.data = []
+		self.data_stat = data_stat
 		self.processInputFile()
 
 	def processInputFile(self):
@@ -166,9 +182,8 @@ class TestDataInterpreter():
 
 	def patchUnknownData(self):
 		column_patch_method = ["median", "modus", "modus", "mean", \
-		"mean", "modus", "modus", "median", \
-		"modus", "median", "modus", "modus", \
-		"modus"]
+		"mean", "modus", "modus", "mean", \
+		"modus", "mean", "modus", "modus", "modus"]
 
 		column_patch_values = self.getColumnPatchVal(column_patch_method)
 
@@ -183,55 +198,10 @@ class TestDataInterpreter():
 
 		for i in range(len(patch_method)):
 			if patch_method[i] == 'modus':
-				patch_val.append(self.getDataModus(i))
+				patch_val.append(self.data_stat[i]['modus'])
 			elif patch_method[i] == 'median':
-				patch_val.append(self.getDataMedian(i))
+				patch_val.append(self.data_stat[i]['median'])
 			elif patch_method[i] == 'mean':
-				patch_val.append(self.getDataMean(i))
+				patch_val.append(self.data_stat[i]['mean'])
 
 		return patch_val
-
-	def getDataModus(self, j):
-		data_dict = {}
-
-		for i in range(len(self.data)):
-			if str(self.data[i][j]) in data_dict:
-				data_dict[str(self.data[i][j])] += 1
-			else :
-				data_dict[str(self.data[i][j])] = 0
-
-		max_key = ''
-		max_val = -1
-		for key, val in data_dict.items():
-			if val > max_val:
-				max_key = key
-				max_val = val
-
-		return str(max_val)
-
-	def getDataMedian(self, j):
-		column_list = []
-
-		for i in range(len(self.data)):
-			column_list.append(self.data[i][j])
-
-		column_list.sort()
-		median_idx = (len(column_list)//2) + 1
-
-		return str(column_list[median_idx])
-
-	def __is_int__(self, input):
-		try:
-			a = int(input)
-			return True
-		except :
-			return False
-
-	def getDataMean(self, j):
-		column_sum = 0
-
-		for i in range(len(self.data)):
-			if self.__is_int__(self.data[i][j]):
-				column_sum += int(self.data[i][j])
-
-		return str(column_sum / len(self.data)) 
